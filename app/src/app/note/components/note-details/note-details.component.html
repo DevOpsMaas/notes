@@ -1,0 +1,28 @@
+<div class="form-container">
+    <form #noteForm="ngForm" (ngSubmit)="onSubmit(noteForm)">
+        <div>
+            <label for="price" class="block text-sm font-medium text-indigo-700">Title</label>
+            <div class="relative mt-1 rounded-md shadow-sm">
+                <input type="text" name="title" id="title" [ngModel]="note.title" required
+                    class="block w-full bg-indigo-50 rounded-md border-gray-300 pl-3 pr-3 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Title">
+            </div>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="price" class="block text-sm font-medium text-indigo-700">Body</label>
+            <div class="relative mt-1 rounded-md shadow-sm">
+                <textarea type="text" name="body" id="body" [ngModel]="note.body"
+                    class="block w-full bg-indigo-50 rounded-md border-gray-300 pl-3 pr-3 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Body"></textarea>
+            </div>
+        </div>
+
+        <div class="flex flex-row justify-end gap-x-5 my-5">
+            <button class="underline" (click)="cancel()">Cancel</button>
+            <button class="rounded-md px-4 py-2 text-white" [ngClass]="noteForm.valid == false ? 'bg-indigo-300' : 'bg-indigo-500'" type="submit" [disabled]="!noteForm.valid">Save</button>
+        </div>
+    </form>
+</div>

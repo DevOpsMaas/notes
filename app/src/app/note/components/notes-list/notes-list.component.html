@@ -1,0 +1,26 @@
+<div class="main-container">
+    <div class="search-bar-container">
+        <div>
+            <div class="relative mt-1 rounded-md shadow-sm">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span class="text-gray-500 sm:text-sm"><i class="fas fa-search"></i></span>
+                </div>
+                <input type="text" name="filter" id="filter" [(ngModel)]="searchInput" (keyup)="filter()"
+                    class="block w-full rounded-md border-gray-300 pl-10 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Filter">
+            </div>
+        </div>
+    </div>
+
+    <div class="notes-list" [@listAnim]>
+        <app-note-card 
+            *ngFor="let note of filteredNotes; index as i"
+            [link]="generateNoteURL(note)"
+            (delete)="deleteNote(note)"
+            [@itemAnim]
+            [title]="note.title"
+            [body]="note.body"></app-note-card>
+    </div>
+
+    <button class="bg-indigo-500 rounded-md text-white py-2 floating-add-btn" routerLink="new">+ Add</button>
+</div>

@@ -1,0 +1,16 @@
+<div #container class="note-card-container">
+
+    <a [routerLink]="link">
+        <div class="note-card-content">
+            <h1 class="note-card-title text-indigo-500">{{title}}</h1>
+
+            <div #bodyText class="note-card-body">
+                <p class="text-gray-600">{{body}}</p>
+
+                <div #truncator class="fade-out-truncation"></div>
+            </div>
+        </div>
+    </a>
+
+    <div class="x-btn" (click)="onXBtnClick()"> </div>
+</div>
