@@ -4,7 +4,7 @@
 # Which version of Node image to use depends on project dependencies 
 # This is needed to build and compile our code 
 # while generating the docker image
-FROM node:latest as build
+FROM node:18.0.0 as build
 
 # Create a Virtual directory inside the docker image
 WORKDIR /app
