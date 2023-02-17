@@ -4,7 +4,6 @@ require('./config/database').connect();
 import express = require('express');
 import bcrypt = require('bcryptjs');
 import jwt = require('jsonwebtoken');
-const auth = require("./middleware/auth");
 const User = require('./model/user');
 const app = express();
 
