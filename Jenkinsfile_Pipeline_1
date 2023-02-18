@@ -1,72 +1,72 @@
 pipeline {
     agent any
     stages {
-        stage ('Send Slack notification') {
+        stage ("Send Slack notification") {
             steps {
                 slackSend message: "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
             }
         }
-        stage('Get delivery branch') {
+        stage("Get delivery branch") {
             steps {
-                checkout scmGit(branches: [[name: '*/delivery']], userRemoteConfigs: [[url: 'https://github.com/DevOpsMaas/notes']])
+                checkout scmGit(branches: [[name: "*/delivery"]], userRemoteConfigs: [[url: "https://github.com/DevOpsMaas/notes"]])
             }
         }
-        stage('Build application') {
+        stage("Build application") {
             steps {
-                sh 'docker build -t app_notes:1.${env.BUILD_NUMBER} ./app'
+                sh "docker build -t app_notes:1.${env.BUILD_NUMBER} ./app"
             }
         }
-        stage('Build backend services') {
+        stage("Build backend services") {
             steps {
-                sh 'docker build -t notes-service_notes:1.${env.BUILD_NUMBER} ./notes-service'
-                sh 'docker build -t auth-service_notes:1.${env.BUILD_NUMBER} ./auth-service'
+                sh "docker build -t notes-service_notes:1.${env.BUILD_NUMBER} ./notes-service"
+                sh "docker build -t auth-service_notes:1.${env.BUILD_NUMBER} ./auth-service"
             }
         }
-        stage('Build database') {
+        stage("Build database") {
             steps {
-                sh 'docker pull mongo:6.0'
-                sh 'docker tag mongo:6.0 db_notes:1.${env.BUILD_NUMBER}'
-                sh 'docker rmi mongo:6.0'
+                sh "docker pull mongo:6.0"
+                sh "docker tag mongo:6.0 db_notes:1.${env.BUILD_NUMBER}"
+                sh "docker rmi mongo:6.0"
             }
         }
-        stage('Deploy services using Docker Compose') {
+        stage("Deploy services using Docker Compose") {
             steps {
-                sh 'ls'
+                sh "ls"
             }
         }
-        stage('Test application with cURL and web browser') {
+        stage("Test application with cURL and web browser") {
             steps {
-                sh 'ls'
+                sh "ls"
             }
         }
-        stage('Tag docker images') {
+        stage("Tag docker images") {
             steps {
-                sh 'docker tag app_notes:1.${env.BUILD_NUMBER} dopsmaas/app_notes:1.${env.BUILD_NUMBER}'
-                sh 'docker tag notes-service_notes:1.${env.BUILD_NUMBER} dopsmaas/notes-service_notes:1.${env.BUILD_NUMBER}'
-                sh 'docker tag auth-service_notes:1.${env.BUILD_NUMBER} dopsmaas/auth-service_notes:1.${env.BUILD_NUMBER}'
-                sh 'docker tag db_notes:1.${env.BUILD_NUMBER} dopsmaas/db_notes:1.${env.BUILD_NUMBER}'
+                sh "docker tag app_notes:1.${env.BUILD_NUMBER} dopsmaas/app_notes:1.${env.BUILD_NUMBER}"
+                sh "docker tag notes-service_notes:1.${env.BUILD_NUMBER} dopsmaas/notes-service_notes:1.${env.BUILD_NUMBER}"
+                sh "docker tag auth-service_notes:1.${env.BUILD_NUMBER} dopsmaas/auth-service_notes:1.${env.BUILD_NUMBER}"
+                sh "docker tag db_notes:1.${env.BUILD_NUMBER} dopsmaas/db_notes:1.${env.BUILD_NUMBER}"
             }
         }
-        stage('Push images to DockerHub') {
+        stage("Push images to DockerHub") {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'docker_token', variable: 'token')]) {
-                        sh 'docker logout'
-                        sh 'docker login -u dopsmaas -p ${token}'
+                    withCredentials([string(credentialsId: "docker_token", variable: "token")]) {
+                        sh "docker logout"
+                        sh "docker login -u dopsmaas -p ${token}"
 
-                        sh 'docker push dopsmaas/app_notes:1.${env.BUILD_NUMBER}'
-                        sh 'docker push dopsmaas/db_notes:1.${env.BUILD_NUMBER}'
-                        sh 'docker push dopsmaas/notes-service_notes:1.${env.BUILD_NUMBER}'
-                        sh 'docker push dopsmaas/auth-service_notes:1.${env.BUILD_NUMBER}'
+                        sh "docker push dopsmaas/app_notes:1.${env.BUILD_NUMBER}"
+                        sh "docker push dopsmaas/db_notes:1.${env.BUILD_NUMBER}"
+                        sh "docker push dopsmaas/notes-service_notes:1.${env.BUILD_NUMBER}"
+                        sh "docker push dopsmaas/auth-service_notes:1.${env.BUILD_NUMBER}"
 
-                        sh 'docker logout'
+                        sh "docker logout"
                     }
                 }
             }
         }
-        stage('Clean up') {
+        stage("Clean up") {
             steps {
-                sh 'docker system prune -af'
+                sh "docker system prune -af"
             }
         }
     }
