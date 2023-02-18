@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+    stages {
+        stage ("Send Slack notification") {
+            steps {
+                slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+            }
+        }
+        stage("Get delivery branch") {
+            steps {
+                checkout scmGit(branches: [[name: '*/delivery']], userRemoteConfigs: [[url: 'https://github.com/DevOpsMaas/notes']])
+            }
+        }
+        stage("Build application") {
+            steps {
+                sh "docker build -t app_notes:1.${env.BUILD_NUMBER} ./app"
+            }
+        }
+        stage("Build backend services") {
+            steps {
+                sh "docker build -t notes-service_notes:1.${env.BUILD_NUMBER} ./notes-service"
+                sh "docker build -t auth-service_notes:1.${env.BUILD_NUMBER} ./auth-service"
+            }
+        }
+        stage("Build database") {
+            steps {
+                sh "docker pull mongo:6.0"
+                sh "docker tag mongo:6.0 db_notes:1.${env.BUILD_NUMBER}"
+                sh "docker rmi mongo:6.0"
+            }
+        }
+        stage("Deploy to K8s") {
+            steps {
+                sh "ls"
+            }
+        }
+        stage("Clean up") {
+            steps {
+                sh "docker system prune -af"
+            }
+        }
+        post {
+            success {
+                slackSend "Build deployed successfully - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+            }
+            failure {
+                slackSend failOnError:true message:"Build failed  - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+            }
+        }
+    }
+}
