@@ -1,0 +1,46 @@
+version: '2.15.1'
+services:
+  node_auth-service:
+    container_name: auth-service
+    image: node_server_template
+    build: 
+      context: ./auth-service
+    ports:
+      - "4001:4001"
+  node_notes-service:
+    container_name: notes-service
+    image: node_server_template
+    build: 
+      context: ./notes-service
+    ports:
+      - "4000:4000"
+  node_app:
+    hostname: localhost
+    container_name: app
+    image: angular-container
+    build:
+      context: ./app 
+    ports:
+      - "80:80"
+  #   environment:
+  #     - EXTERNAL_PORT=3001
+  #     - PGUSER=nb_user
+  #     - PGPASSWORD=12345
+  #     - PGDATABASE=nb_database
+  #     - PGHOST=postgress_db
+  #   depends_on:
+  #     - mongo_db
+  # mongo_db:
+  #   container_name: db_notes
+  #   image: mongo:latest
+  #   restart: always
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     - MONGODB_UI=nb_user
+  #     - DB_PASSWORD=12345
+  #     - DB_NAME=nb_database
+  #   volumes:
+      # - 
+# volumes:
+  # 

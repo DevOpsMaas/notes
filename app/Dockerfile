@@ -4,7 +4,8 @@
 # Which version of Node image to use depends on project dependencies 
 # This is needed to build and compile our code 
 # while generating the docker image
-FROM node:18.10 as build
+FROM node:18.10.0 as build
+
 
 # Create a Virtual directory inside the docker image
 WORKDIR /app
@@ -20,7 +21,8 @@ RUN npm run build
 ### STAGE 2:RUN ###
 
 # Defining nginx image to be used
-FROM nginx:1.22.1
+FROM nginx:1.22.1-alpine
+
 
 # NOTE: This path may change according to your project's output folder 
 COPY --from=build /app/dist/notes-app /usr/share/nginx/html
