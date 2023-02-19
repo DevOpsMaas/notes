@@ -1,46 +1,44 @@
-version: '2.15.1'
+version: '1.0.0'
+volumes:
+  db-data:
+    name: db-volume
 services:
-  node_auth-service:
+  auth-service:
     container_name: auth-service
-    image: node_server_template
+    image: auth-service_notes
+    env_file:
+      - services.env
     build: 
       context: ./auth-service
     ports:
-      - "4001:4001"
-  node_notes-service:
+      - "7777:${API_PORT}"
+    depends_on:
+      - db-mongo
+  notes-service:
     container_name: notes-service
-    image: node_server_template
+    image: notes-service_notes
+    env_file:
+      - services.env
     build: 
       context: ./notes-service
     ports:
-      - "4000:4000"
-  node_app:
+      - "8888:${API_PORT}"
+    depends_on:
+      - db-mongo
+  app:
     hostname: localhost
     container_name: app
     image: angular-container
     build:
-      context: ./app 
+      context: ./app
     ports:
       - "80:80"
-  #   environment:
-  #     - EXTERNAL_PORT=3001
-  #     - PGUSER=nb_user
-  #     - PGPASSWORD=12345
-  #     - PGDATABASE=nb_database
-  #     - PGHOST=postgress_db
-  #   depends_on:
-  #     - mongo_db
-  # mongo_db:
-  #   container_name: db_notes
-  #   image: mongo:latest
-  #   restart: always
-  #   ports:
-  #     - "27017:27017"
-  #   environment:
-  #     - MONGODB_UI=nb_user
-  #     - DB_PASSWORD=12345
-  #     - DB_NAME=nb_database
-  #   volumes:
-      # - 
-# volumes:
-  # 
+  db-mongo:
+    hostname: localhost
+    container_name: db-service
+    image: mongo:6.0
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - db-data:/db/data
