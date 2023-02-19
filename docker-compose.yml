@@ -7,7 +7,7 @@ services:
     container_name: auth-service
     image: auth-service_notes
     env_file:
-      - services.env
+      - .env
     build: 
       context: ./auth-service
     ports:
@@ -18,7 +18,7 @@ services:
     container_name: notes-service
     image: notes-service_notes
     env_file:
-      - services.env
+      - .env
     build: 
       context: ./notes-service
     ports:
