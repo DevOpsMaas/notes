@@ -76,6 +76,7 @@ pipeline {
         }
         stage("Clean up") {
             steps {
+                sh "docker stop $(docker container ls -q)"
                 sh "docker system prune -af"
             }
         }
