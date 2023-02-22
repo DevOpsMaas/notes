@@ -13,6 +13,9 @@ pipeline {
         }
         stage("Build application") {
             steps {
+                sh "mkdir ./app/src/environments"
+                sh 'echo export const environment={production: true,MONGO_URI: "mongodb://db-mongo:27017/devops"}; >> ./app/src/environments/environments.ts'
+                sh 'echo export const environment={production: false,MONGO_URI: "mongodb://db-mongo:27017/devops"}; >> ./app/src/environments/environments.prod.ts'
                 sh "docker build -t app_notes:1.${env.BUILD_NUMBER} ./app"
             }
         }
