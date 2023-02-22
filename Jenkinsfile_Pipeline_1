@@ -37,7 +37,7 @@ pipeline {
                 sh "echo API_PORT=${env.API_PORT} >> .env"
                 sh "echo MONGO_URI=${env.MONGO_URI} >> .env"
                 sh "echo PRIVATE_KEY=${env.PRIVATE_KEY} >> .env"
-                sh "docker compose up -d"
+                sh "docker compose up"
             }
         }
         stage("Test application with cURL and web browser") {
