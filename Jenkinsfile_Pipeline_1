@@ -31,12 +31,22 @@ pipeline {
         }
         stage("Deploy services using Docker Compose") {
             steps {
-                sh "ls"
+                sh "echo API_PORT=${env.API_PORT} >> .env"
+                sh "echo MONGO_URI=${env.MONGO_URI} >> .env"
+                sh "echo PRIVATE_KEY=${env.PRIVATE_KEY} >> .env"
+                sh "docker compose up -d"
             }
         }
         stage("Test application with cURL and web browser") {
             steps {
-                sh "ls"
+                sh "
+                    if [ $(curl -s -o /dev/null -w "%{response_code}" localhost:80) -eq 200 ]
+                    then
+                        echo \"App is working\"
+                    else
+                        exit 1
+                    fi
+                "
             }
         }
         stage("Tag docker images") {
@@ -66,6 +76,7 @@ pipeline {
         }
         stage("Clean up") {
             steps {
+                sh "docker stop $(docker container ls -q)"
                 sh "docker system prune -af"
             }
         }
